@@ -6,6 +6,7 @@
 import os
 import coremltools
 import onnxmltools
+import logging
 
 models_dir = 'models/'
 
@@ -31,12 +32,15 @@ def convert_model(model_name, model_path):
 
 
 def run():
+  logger = logging.getLogger()
   for (path, _, files) in os.walk(models_dir):
     model_files = filter(lambda f: f.endswith('.caffemodel'), files)
     for file in model_files:
+      model_name = file[:-16]
       try:
-        convert_model(file[:-16], path)
+        convert_model(model_name, path)
       except:
+        logger.exception("Error when converting {}/{}".format(path, model_name))
         pass
 
 
